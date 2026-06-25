@@ -2,6 +2,7 @@ import streamlit as st
 import pickle
 import numpy as np
 import pandas as pd
+import plotly.graph_objects as go
 
 st.set_page_config(
     page_title="AttritionAI — HR Risk Intelligence",
@@ -414,6 +415,84 @@ if predict_clicked:
         <div class="risk-bar-bg"><div class="{bar_class}" style="width:{leave_prob:.0f}%"></div></div>
         <div class="risk-status {status_class}">{status_text}</div>
     </div>""", unsafe_allow_html=True)
+
+    # ── CHARTS ────────────────────────────────────────────────────────────────
+    st.markdown('<div style="margin-top:20px;"><div class="section-title" style="color:#F1F5F9;font-size:12px;margin-bottom:12px;">Risk Visualisation</div></div>', unsafe_allow_html=True)
+
+    chart_col1, chart_col2 = st.columns(2)
+
+    # Gauge chart – attrition risk meter
+    with chart_col1:
+        gauge_color = "#10B981" if leave_prob < 30 else ("#F59E0B" if leave_prob < 60 else "#EF4444")
+        fig_gauge = go.Figure(go.Indicator(
+            mode="gauge+number",
+            value=leave_prob,
+            number={"suffix": "%", "font": {"color": "#F1F5F9", "size": 28, "family": "Inter"}},
+            title={"text": "Attrition Risk Score", "font": {"color": "#94A3B8", "size": 11, "family": "Inter"}},
+            gauge={
+                "axis": {"range": [0, 100], "tickcolor": "#374151", "tickfont": {"color": "#64748B", "size": 9}},
+                "bar": {"color": gauge_color, "thickness": 0.25},
+                "bgcolor": "#131827",
+                "borderwidth": 0,
+                "steps": [
+                    {"range": [0, 30],  "color": "#0D3321"},
+                    {"range": [30, 60], "color": "#2D1A00"},
+                    {"range": [60, 100],"color": "#3B0D0D"},
+                ],
+                "threshold": {
+                    "line": {"color": gauge_color, "width": 3},
+                    "thickness": 0.75,
+                    "value": leave_prob,
+                },
+            }
+        ))
+        fig_gauge.update_layout(
+            paper_bgcolor="#0F1420",
+            plot_bgcolor="#0F1420",
+            height=240,
+            margin=dict(l=20, r=20, t=40, b=10),
+            font=dict(family="Inter"),
+        )
+        st.plotly_chart(fig_gauge, use_container_width=True, config={"displayModeBar": False})
+
+    # Horizontal bar chart – Stay vs Leave probability
+    with chart_col2:
+        fig_bar = go.Figure()
+        fig_bar.add_trace(go.Bar(
+            x=[stay_prob],
+            y=[""],
+            orientation="h",
+            name="Stay",
+            marker_color="#10B981",
+            text=f"{stay_prob:.1f}%",
+            textposition="inside",
+            textfont=dict(color="#fff", size=12, family="Inter"),
+            width=0.45,
+        ))
+        fig_bar.add_trace(go.Bar(
+            x=[leave_prob],
+            y=[""],
+            orientation="h",
+            name="Leave",
+            marker_color="#EF4444",
+            text=f"{leave_prob:.1f}%",
+            textposition="inside",
+            textfont=dict(color="#fff", size=12, family="Inter"),
+            width=0.45,
+        ))
+        fig_bar.update_layout(
+            barmode="stack",
+            paper_bgcolor="#0F1420",
+            plot_bgcolor="#0F1420",
+            height=240,
+            margin=dict(l=20, r=20, t=40, b=20),
+            title=dict(text="Stay vs Leave Probability", font=dict(color="#94A3B8", size=11, family="Inter"), x=0),
+            xaxis=dict(range=[0, 100], ticksuffix="%", tickfont=dict(color="#64748B", size=9), gridcolor="#1E2433", zeroline=False),
+            yaxis=dict(showticklabels=False, gridcolor="#1E2433"),
+            legend=dict(font=dict(color="#94A3B8", size=10, family="Inter"), bgcolor="#0F1420", bordercolor="#1E2433", borderwidth=1),
+            font=dict(family="Inter"),
+        )
+        st.plotly_chart(fig_bar, use_container_width=True, config={"displayModeBar": False})
 
     # Recommendations
     recs = []
