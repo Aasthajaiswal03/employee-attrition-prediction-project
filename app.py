@@ -166,7 +166,44 @@ div[data-testid="stSlider"] > div { background: transparent !important; }
     box-shadow: 0 0 8px rgba(79,70,229,0.5) !important;
 }
 
-/* ── Expander fix — hide the default arrow text ── */
+/* ── Expander fix — modern Streamlit selectors ── */
+/* Header container */
+div[data-testid="stExpander"] > details > summary {
+    background:#0F1420 !important;
+    border:1px solid #1E2433 !important;
+    border-radius:10px !important;
+    padding:12px 16px !important;
+    transition: border-color 0.2s !important;
+}
+div[data-testid="stExpander"] > details[open] > summary {
+    border-radius:10px 10px 0 0 !important;
+}
+div[data-testid="stExpander"] > details > summary:hover {
+    border-color:#4F46E5 !important;
+}
+/* Hide the icon that shows "keyboard_double_arrow_right" text */
+div[data-testid="stExpander"] summary svg { display:none !important; }
+div[data-testid="stExpander"] summary [data-testid="stExpanderToggleIcon"] { display:none !important; }
+/* Hide any icon/text artifacts */
+div[data-testid="stExpander"] summary span[class*="icon"] { display:none !important; }
+div[data-testid="stExpander"] summary p {
+    font-size:11px !important;
+    font-weight:600 !important;
+    color:#94A3B8 !important;
+    text-transform:uppercase !important;
+    letter-spacing:0.8px !important;
+    margin:0 !important;
+}
+div[data-testid="stExpander"] > details > summary:hover p { color:#F1F5F9 !important; }
+/* Expander content */
+div[data-testid="stExpander"] > details > div[data-testid="stExpanderDetails"] {
+    background:#0F1420 !important;
+    border:1px solid #1E2433 !important;
+    border-top:none !important;
+    border-radius:0 0 10px 10px !important;
+    padding:16px !important;
+}
+/* Legacy selectors for older Streamlit */
 .streamlit-expanderHeader {
     background:#0F1420 !important;
     border:1px solid #1E2433 !important;
@@ -177,17 +214,6 @@ div[data-testid="stSlider"] > div { background: transparent !important; }
     text-transform:uppercase !important;
     letter-spacing:0.8px !important;
     padding:12px 16px !important;
-    transition: border-color 0.2s, color 0.2s !important;
-}
-.streamlit-expanderHeader:hover {
-    border-color:#4F46E5 !important;
-    color:#F1F5F9 !important;
-}
-.streamlit-expanderHeader p { display:none !important; }
-.streamlit-expanderHeader::before {
-    content: "Satisfaction & Performance Details";
-    font-size:11px; font-weight:600; color:inherit;
-    text-transform:uppercase; letter-spacing:0.8px;
 }
 .streamlit-expanderContent {
     background:#0F1420 !important;
@@ -196,10 +222,11 @@ div[data-testid="stSlider"] > div { background: transparent !important; }
     border-radius:0 0 10px 10px !important;
     padding:16px !important;
 }
-/* Hide any stray arrow characters */
+/* Hide ALL stray arrow/icon characters everywhere */
 details > summary svg { display:none !important; }
-details > summary::marker { display:none !important; content:''; }
+details > summary::marker { display:none !important; content:'' !important; }
 details > summary::-webkit-details-marker { display:none !important; }
+[data-testid="stExpanderToggleIcon"] { display:none !important; }
 
 /* ── Predict button ── */
 .stButton > button {
@@ -289,6 +316,17 @@ hr { border-color:#1E2433 !important; margin:20px 0 !important; }
 
 div[data-testid="stMetricValue"] { color:#F1F5F9 !important; font-size:22px !important; font-weight:700 !important; }
 div[data-testid="stMetricLabel"] { color:#64748B !important; font-size:10px !important; }
+
+/* ── Hide stray Material icon text (keyboard_double_arrow etc) ── */
+button[data-testid="collapsedControl"] span { display:none !important; }
+button[data-testid="collapsedControl"] svg { display:none !important; }
+[data-testid="collapsedControl"] { overflow:hidden !important; }
+/* Hide any leaked icon text nodes at root level */
+section[data-testid="stSidebar"] > div > div > span { display:none !important; }
+.stSidebarCollapsedControl span { display:none !important; }
+/* Catch-all for material icon text overflow */
+button[kind="header"] span[class*="material"] { display:none !important; }
+span[translate="no"] { font-size:0 !important; }
 </style>
 """, unsafe_allow_html=True)
 
