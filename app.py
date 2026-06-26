@@ -696,7 +696,6 @@ with c2:
     monthly_rate              = st.number_input("Monthly Rate", 2000, 27000, 14000, step=500)
 
 st.markdown('</div>', unsafe_allow_html=True)
-    c1, c2 = st.columns(2)
     with c1:
         distance_home            = st.slider("Distance From Home (km)", 1, 29, 9)
         environment_satisfaction = st.selectbox("Environment Satisfaction", [1,2,3,4],
