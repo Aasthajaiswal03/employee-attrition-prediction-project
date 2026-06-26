@@ -309,6 +309,7 @@ AMBER     = "#F59E0B"
 def fig_to_bytes(fig):
     buf = io.BytesIO()
     fig.savefig(buf, format="png", bbox_inches="tight", dpi=140, facecolor=fig.get_facecolor())
+    plt.close(fig)
     buf.seek(0)
     return buf
 
@@ -501,16 +502,24 @@ def load_model():
         with open('Model/model.pkl', 'rb') as f:
             return pickle.load(f)
     except FileNotFoundError:
-        st.error("model.pkl not found inside Model/ folder.")
-        st.stop()
+        st.error("❌ model.pkl not found inside Model/ folder. Make sure Model/model.pkl exists in your repo.")
+        return None
+    except Exception as e:
+        st.error(f"❌ Error loading model: {e}")
+        return None
 
 pkg            = load_model()
-model          = pkg['model']
+if pkg is None:
+    st.stop()
+model          = pkg.get('model')
 scaler         = pkg.get('scaler')
 needs_scaling  = pkg.get('needs_scaling', False)
 label_encoders = pkg.get('label_encoders', {})
 feature_names  = pkg.get('feature_names', [])
 model_name     = pkg.get('model_name', 'ML Model')
+if model is None:
+    st.error("Model not found in model.pkl. Please check the pkl file structure.")
+    st.stop()
 
 
 # ── SIDEBAR ───────────────────────────────────────────────────────────────────
@@ -621,6 +630,8 @@ st.markdown("""
 <div class="section-divider"></div>
 """, unsafe_allow_html=True)
 
+col1, col2, col3 = st.columns(3)
+
 with col1:
     st.markdown('<div class="form-panel"><div class="panel-title"><div class="panel-dot"></div>Personal</div>', unsafe_allow_html=True)
     age             = st.slider("Age", 18, 60, 35)
@@ -671,45 +682,22 @@ work_life_balance         = 3
 performance_rating        = 3
 monthly_rate              = 14000
 
-st.markdown("""
-<div style="background:#0F1420;border:1px solid #1E2433;border-radius:10px;
-padding:14px 18px;margin-bottom:16px;">
-<div style="font-size:10px;font-weight:700;color:#4F46E5;text-transform:uppercase;
-letter-spacing:1.4px;margin-bottom:14px;border-bottom:1px solid #1E2433;
-padding-bottom:10px;">Satisfaction & Performance Details (optional)</div>
-""", unsafe_allow_html=True)
-
-c1, c2 = st.columns(2)
-with c1:
-    distance_home            = st.slider("Distance From Home (km)", 1, 29, 9)
-    environment_satisfaction = st.selectbox("Environment Satisfaction", [1,2,3,4],
-                                 format_func=lambda x:{1:"Low",2:"Medium",3:"High",4:"Very High"}[x])
-    job_satisfaction         = st.selectbox("Job Satisfaction", [1,2,3,4],
-                                 format_func=lambda x:{1:"Low",2:"Medium",3:"High",4:"Very High"}[x])
-with c2:
-    relationship_satisfaction = st.selectbox("Relationship Satisfaction", [1,2,3,4],
-                                  format_func=lambda x:{1:"Low",2:"Medium",3:"High",4:"Very High"}[x])
-    work_life_balance         = st.selectbox("Work-Life Balance", [1,2,3,4],
-                                  format_func=lambda x:{1:"Bad",2:"Good",3:"Better",4:"Best"}[x])
-    performance_rating        = st.selectbox("Performance Rating", [3,4],
-                                  format_func=lambda x:{3:"Excellent",4:"Outstanding"}[x])
-    monthly_rate              = st.number_input("Monthly Rate", 2000, 27000, 14000, step=500)
-
-st.markdown('</div>', unsafe_allow_html=True)
-with c1:
-    distance_home            = st.slider("Distance From Home (km)", 1, 29, 9)
-    environment_satisfaction = st.selectbox("Environment Satisfaction", [1,2,3,4],
+with st.expander("Satisfaction & Performance Details (optional)"):
+    c1, c2 = st.columns(2)
+    with c1:
+        distance_home            = st.slider("Distance From Home (km)", 1, 29, 9)
+        environment_satisfaction = st.selectbox("Environment Satisfaction", [1,2,3,4],
                                      format_func=lambda x:{1:"Low",2:"Medium",3:"High",4:"Very High"}[x])
-    job_satisfaction         = st.selectbox("Job Satisfaction", [1,2,3,4],
+        job_satisfaction         = st.selectbox("Job Satisfaction", [1,2,3,4],
                                      format_func=lambda x:{1:"Low",2:"Medium",3:"High",4:"Very High"}[x])
-with c2:
-    relationship_satisfaction = st.selectbox("Relationship Satisfaction", [1,2,3,4],
+    with c2:
+        relationship_satisfaction = st.selectbox("Relationship Satisfaction", [1,2,3,4],
                                       format_func=lambda x:{1:"Low",2:"Medium",3:"High",4:"Very High"}[x])
-    work_life_balance         = st.selectbox("Work-Life Balance", [1,2,3,4],
+        work_life_balance         = st.selectbox("Work-Life Balance", [1,2,3,4],
                                       format_func=lambda x:{1:"Bad",2:"Good",3:"Better",4:"Best"}[x])
-    performance_rating        = st.selectbox("Performance Rating", [3,4],
+        performance_rating        = st.selectbox("Performance Rating", [3,4],
                                       format_func=lambda x:{3:"Excellent",4:"Outstanding"}[x])
-    monthly_rate              = st.number_input("Monthly Rate", 2000, 27000, 14000, step=500)
+        monthly_rate              = st.number_input("Monthly Rate", 2000, 27000, 14000, step=500)
 
 st.markdown("---")
 
