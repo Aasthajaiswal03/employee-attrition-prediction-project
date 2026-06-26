@@ -621,8 +621,6 @@ st.markdown("""
 <div class="section-divider"></div>
 """, unsafe_allow_html=True)
 
-col1, col2, col3 = st.columns(3)
-
 with col1:
     st.markdown('<div class="form-panel"><div class="panel-title"><div class="panel-dot"></div>Personal</div>', unsafe_allow_html=True)
     age             = st.slider("Age", 18, 60, 35)
