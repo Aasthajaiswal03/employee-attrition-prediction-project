@@ -673,7 +673,31 @@ work_life_balance         = 3
 performance_rating        = 3
 monthly_rate              = 14000
 
-with st.expander("Satisfaction & Performance Details (optional)"):
+st.markdown("""
+<div style="background:#0F1420;border:1px solid #1E2433;border-radius:10px;
+padding:14px 18px;margin-bottom:16px;">
+<div style="font-size:10px;font-weight:700;color:#4F46E5;text-transform:uppercase;
+letter-spacing:1.4px;margin-bottom:14px;border-bottom:1px solid #1E2433;
+padding-bottom:10px;">Satisfaction & Performance Details (optional)</div>
+""", unsafe_allow_html=True)
+
+c1, c2 = st.columns(2)
+with c1:
+    distance_home            = st.slider("Distance From Home (km)", 1, 29, 9)
+    environment_satisfaction = st.selectbox("Environment Satisfaction", [1,2,3,4],
+                                 format_func=lambda x:{1:"Low",2:"Medium",3:"High",4:"Very High"}[x])
+    job_satisfaction         = st.selectbox("Job Satisfaction", [1,2,3,4],
+                                 format_func=lambda x:{1:"Low",2:"Medium",3:"High",4:"Very High"}[x])
+with c2:
+    relationship_satisfaction = st.selectbox("Relationship Satisfaction", [1,2,3,4],
+                                  format_func=lambda x:{1:"Low",2:"Medium",3:"High",4:"Very High"}[x])
+    work_life_balance         = st.selectbox("Work-Life Balance", [1,2,3,4],
+                                  format_func=lambda x:{1:"Bad",2:"Good",3:"Better",4:"Best"}[x])
+    performance_rating        = st.selectbox("Performance Rating", [3,4],
+                                  format_func=lambda x:{3:"Excellent",4:"Outstanding"}[x])
+    monthly_rate              = st.number_input("Monthly Rate", 2000, 27000, 14000, step=500)
+
+st.markdown('</div>', unsafe_allow_html=True)
     c1, c2 = st.columns(2)
     with c1:
         distance_home            = st.slider("Distance From Home (km)", 1, 29, 9)
