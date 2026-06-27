@@ -5,7 +5,7 @@ Predicting whether an employee will leave the company using Machine Learning <br
 
 Live Demo : [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app-url.streamlit.app)  <br>
 
-📌 Problem Statement
+📌 Problem Statement: <br>
 Employee attrition is a major challenge for HR departments. This project builds a classification model to predict whether an employee is likely to leave the company, using the IBM HR Analytics Employee Attrition Dataset. <br>
 
 Project Phases:<br>
